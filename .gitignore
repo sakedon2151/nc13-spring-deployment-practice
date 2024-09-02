@@ -35,3 +35,7 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Remote Edit Yaml Ignore ###
+.src.main/resources/application.yaml
+
