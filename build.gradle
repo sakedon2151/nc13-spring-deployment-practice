@@ -1,0 +1,76 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.3.2'
+    id 'io.spring.dependency-management' version '1.1.6'
+}
+
+group = 'com.demo'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+//    implementation 'org.springframework.boot:spring-boot-starter-security' // <- spring security
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta' // <- querydsl
+    annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta" // <- querydsl
+    annotationProcessor "jakarta.annotation:jakarta.annotation-api" // <- querydsl
+    annotationProcessor "jakarta.persistence:jakarta.persistence-api" // <- querydsl
+
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    runtimeOnly 'com.mysql:mysql-connector-j' // <- runtimeOnly: 가장 먼저 실행됨. MySQL 에 의존성을 가지게 됨.
+    annotationProcessor 'org.projectlombok:lombok'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.6.0' // swagger
+//    implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '3.0.0' // swagger legacy
+//    implementation group: 'io.springfox', name: 'springfox-swagger2', version: '3.0.0' //swagger legacy
+
+//    testImplementation 'org.springframework.security:spring-security-test' // <- spring security
+//    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.9.3' // <- junit 최종버전
+//    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.3' // <- junit jupiter api
+//    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.3' // <- junit jupiter engine
+}
+
+clean {
+    delete file('src/main/generated')
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+// --- JAR 파일 생성 설정 ---
+// 최신 버전의 gradle 버전에서는 tasks 키워드가 필요하지 않다.
+// 명령어로도 경로와 네이밍 지정도 가능하지만 정석은 build.gradle 에 작성해두고 명령줄로 속성을 전달하는 것.
+bootJar {
+    archiveFileName = "my-app.jar"
+    destinationDirectory = layout.buildDirectory.dir('generated')
+}
+jar {
+    enabled = false
+    manifest {
+        attributes 'Main-Class': 'com.demo.item.ItemApplication'
+    }
+}
+
+
+
