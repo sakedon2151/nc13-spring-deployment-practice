@@ -38,7 +38,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public boolean existsById(Long id) {
+    public Boolean existsById(Long id) {
         return itemRepository.existsById(id);
     }
 

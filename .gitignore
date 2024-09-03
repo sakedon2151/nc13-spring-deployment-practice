@@ -36,6 +36,6 @@ out/
 ### VS Code ###
 .vscode/
 
-### Remote Edit Yaml Ignore ###
-.src.main/resources/application.yaml
+### cash delete & git ignore
+./src/main/resources/application.yaml
 

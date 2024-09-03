@@ -3,17 +3,15 @@ package com.demo.item.controller;
 import com.demo.item.model.domain.ItemModel;
 import com.demo.item.model.entity.ItemEntity;
 import com.demo.item.service.ItemService;
-import com.demo.item.util.PageProxy;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
+@CrossOrigin(origins = "http://localhost:3000/")
 @Tag(name = "Item", description = "Item Service API")
 @RequiredArgsConstructor
 @RestController
@@ -27,33 +25,46 @@ public class ItemController {
     // - Mapping 의 네이밍은 간결하게 한다.
     // - Http Method 양식을 준수해야 한다.(GET, POST, PUT, DELETE)
 
-    @GetMapping("/list")
-    public ResponseEntity<List<ItemEntity>> getList() {
+    // Get all items
+    @GetMapping("")
+    public ResponseEntity<List<ItemEntity>> getAllItems() {
         return ResponseEntity.ok(itemService.findAll());
     }
 
-    @PostMapping("")
-    public ItemEntity save(@RequestBody ItemModel model) {
-        return itemService.save(model);
-    }
-
+    // Get a single item
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<ItemEntity>> getById(@PathVariable Long id) {
+    public ResponseEntity<Optional<ItemEntity>> getItem(@PathVariable Long id) {
         return ResponseEntity.ok(itemService.findById(id));
     }
 
-    @GetMapping("existsById")
-    public boolean existsById(Long id) {
-        return itemService.existsById(id);
+    // Check if it exists
+    @GetMapping("/existsById")
+    public ResponseEntity<Boolean> existsById(Long id) {
+        return ResponseEntity.ok(itemService.existsById(id));
     }
 
-    @GetMapping("count")
-    public long count() {
+    // Count items
+    @GetMapping("/count")
+    public long countItems() {
         return itemService.count();
     }
 
+    // Create a new item
+    @PostMapping("")
+    public ItemEntity createItem(@RequestBody ItemModel model) {
+        return itemService.save(model);
+    }
+
+    // Update an existing item
+    @PutMapping("/{id}")
+    public ItemEntity updateItem(@PathVariable Long id, @RequestBody ItemModel model) {
+        model.setId(id);
+        return itemService.save(model);
+    }
+
+    // Delete an item
     @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable Long id) {
+    public void deleteItem(@PathVariable Long id) {
         itemService.deleteById(id);
     }
 }
