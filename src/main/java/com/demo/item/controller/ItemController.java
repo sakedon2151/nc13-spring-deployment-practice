@@ -3,6 +3,7 @@ package com.demo.item.controller;
 import com.demo.item.model.domain.ItemModel;
 import com.demo.item.model.entity.ItemEntity;
 import com.demo.item.service.ItemService;
+import com.demo.item.service.WebScrapingService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import java.util.Optional;
 public class ItemController {
 
     private final ItemService itemService;
+    private final WebScrapingService webScrapingService;
 
     // - Rest Api 의 return 값 = ResponseEntity.ok
     // - Controller 는 단순한 return 코딩만 진행한다. 로직은 Service Impl 에서 구현할 것
@@ -66,5 +68,11 @@ public class ItemController {
     @DeleteMapping("/{id}")
     public void deleteItem(@PathVariable Long id) {
         itemService.deleteById(id);
+    }
+
+    @GetMapping("/scrape")
+    public String scrapSite(@RequestParam String url) {
+        webScrapingService.jsoupScrapeWebsite(url); // Jsoup 스크래핑
+        return webScrapingService.seleniumScrapeWebsite(url); // selenium 스크래핑
     }
 }
